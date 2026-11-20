@@ -1,0 +1,9 @@
+{
+  "name": "brothers-in-the-box-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "update-episodes": "node scripts/update-episodes.mjs"
+  },
+  "engines": { "node": ">=18" }
+}

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brothers in the Box — Hockey Podcast with Ilyas &amp; Eshan Kherani</title>
+<meta name="description" content="Two Canadian brothers, Ilyas and Eshan Kherani, on the relevant and completely irrelevant ins and outs of the NHL, plus a little pop culture. New episodes every Sunday.">
+<meta name="theme-color" content="#F5F7FA">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brothers in the Box">
+<meta property="og:title" content="Brothers in the Box — Hockey Podcast">
+<meta property="og:description" content="Two Canadian brothers on the NHL, the Oilers, the Canucks and everything in between. New episodes every Sunday.">
+<meta property="og:image" content="assets/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  .rink { position: absolute; inset: 0; pointer-events: none; }
+  .rink .center { position: absolute; top: 0; bottom: 0; left: 50%; width: 10px; margin-left: -5px; background: var(--orange); opacity: 0.12; }
+  .rink .blue { position: absolute; top: 0; bottom: 0; width: 14px; background: var(--navy); opacity: 0.08; }
+  .rink .circle { position: absolute; left: 50%; top: 50%; width: 46vmin; height: 46vmin; margin: -23vmin 0 0 -23vmin; border: 3px solid var(--navy); border-radius: 50%; opacity: 0.10; }
+  .bigtype { position: absolute; inset: 0; margin: 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 104px 4vw 0; font-family: var(--display); font-weight: 400; font-size: clamp(72px, min(11vw, 17vh), 190px); line-height: 0.86; letter-spacing: 0.01em; text-transform: uppercase; text-align: center; pointer-events: none; }
+  .bigtype .box { color: var(--orange); border: 0.06em solid; border-image: linear-gradient(180deg, var(--navy), #FFFFFF 50%, var(--orange)) 1; padding: 0 0.12em; }
+  .poster { position: absolute; left: 50%; top: 48%; width: 300px; height: 120px; margin: -60px 0 0 -150px; transition: opacity 600ms ease; pointer-events: none; }
+  .poster i { position: absolute; left: 0; right: 0; display: block; }
+  .poster .side { top: 26px; height: 94px; border-radius: 50%; background: #0E0F11; }
+  .poster .mid { top: 26px; height: 40px; background: #0E0F11; }
+  .poster .top { top: 0; height: 94px; border-radius: 50%; background: #1B1D21; box-shadow: inset 0 0 0 3px #2A2D33; }
+  #puck { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; cursor: grab; }
+  .label { position: absolute; left: 0; top: 0; display: flex; align-items: center; opacity: 0; visibility: hidden; pointer-events: none; will-change: transform; }
+  .label .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 3px var(--ground); flex: none; }
+  .label .lead { width: 44px; height: 2px; background: var(--ink); flex: none; }
+  .label .plate { background: var(--ink); color: var(--ground); padding: 10px 14px; border-radius: 10px; display: flex; flex-direction: column; gap: 3px; max-width: 220px; }
+  .label .plate small { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: #A9B6C0; }
+  .label .plate b { font-size: 15px; }
+  .stage .site-nav { position: absolute; top: 0; left: 0; right: 0; z-index: 2; }
+  .rail { position: absolute; left: 6vw; right: 6vw; bottom: 28px; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+  .rail .ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: #7A8691; }
+  .rail .bar { height: 3px; background: rgba(11, 13, 16, 0.12); border-radius: 3px; overflow: hidden; }
+  .rail .fill { height: 100%; width: 0; background: var(--orange); }
+  .beat { position: relative; height: 100vh; height: 100svh; display: flex; align-items: center; padding: 0 6vw; pointer-events: none; }
+  .beat .copy { pointer-events: auto; max-width: 420px; display: flex; flex-direction: column; gap: 14px; }
+  .beat h2 { font-size: clamp(40px, 5vw, 64px); }
+  #intro { margin-top: -100vh; margin-top: -100svh; align-items: flex-end; padding-bottom: 112px; }
+  #intro .lede { font-size: 18px; }
+  #intro .copy { background: rgba(245, 247, 250, 0.92); border-radius: 16px; padding: 20px 22px 22px; box-shadow: 0 10px 30px rgba(11, 13, 16, 0.08); }
+  #listen .copy { max-width: 460px; gap: 16px; }
+  #listen h2 { font-size: clamp(44px, 5.6vw, 72px); }
+  .latest { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border-radius: 16px; background: var(--card); box-shadow: 0 6px 20px rgba(11, 13, 16, 0.08); text-decoration: none; }
+  .latest:hover { color: var(--ink); }
+  .latest .num { font-family: var(--display); font-size: 40px; line-height: 1; color: var(--orange-text); min-width: 52px; }
+  .latest .meta { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
+  .latest .t { font-weight: 700; font-size: 15px; line-height: 1.3; }
+  .social-row { display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 14px; font-weight: 600; }
+  .social-row a { padding: 12px 0; }
+  @media (max-width: 760px) {
+    .beat { align-items: flex-end; padding: 0 16px 88px; }
+    #intro { padding-bottom: 88px; }
+    .beat .copy { background: rgba(245, 247, 250, 0.95); border-radius: 16px; padding: 20px 20px 22px; box-shadow: 0 10px 30px rgba(11, 13, 16, 0.10); }
+    .bigtype { font-size: clamp(56px, 17vw, 110px); padding-top: 112px; }
+    #intro .lede { font-size: 15px; }
+    #intro .copy { gap: 12px; }
+    .label { display: none; }
+    .rail .ticks { display: none; }
+    .label .plate { max-width: 150px; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#intro">Skip to content</a>
+<main id="story" style="position: relative">
+  <div class="stage" id="stage">
+    <div class="rink" aria-hidden="true">
+      <div class="center"></div>
+      <div class="blue" style="left: 18%"></div>
+      <div class="blue" style="right: 18%"></div>
+      <div class="circle"></div>
+    </div>
+    <h1 class="bigtype" id="bigtype"><span>Brothers</span><span>In the <span class="box">Box</span></span></h1>
+    <div class="poster" id="poster" aria-hidden="true"><i class="side"></i><i class="mid"></i><i class="top"></i></div>
+    <canvas id="puck" role="img" aria-label="A 3D hockey puck that turns, splits apart and reassembles as you scroll"></canvas>
+    <div class="label" id="label-0" aria-hidden="true"><span class="dot"></span><span class="lead"></span><span class="plate"><small>TOP LAYER</small><b>Player of the Week</b></span></div>
+    <div class="label" id="label-1" aria-hidden="true"><span class="dot" style="background: var(--orange)"></span><span class="lead"></span><span class="plate"><small>THE CORE</small><b>NHL news &amp; analysis</b></span></div>
+    <div class="label" id="label-2" aria-hidden="true"><span class="dot" style="background: var(--navy)"></span><span class="lead"></span><span class="plate"><small>BOTTOM LAYER</small><b>Predictions — and the receipts</b></span></div>
+    <nav class="site-nav" aria-label="Main">
+      <a class="brand" href="./" aria-label="Brothers in the Box home"><img src="assets/logo.png" alt="Brothers in the Box"></a>
+      <div class="links">
+        <a href="#inside">The show</a>
+        <a href="episodes.html">Episodes</a>
+        <a href="https://brothersinthebox.riverside.com/newsletter" target="_blank" rel="noopener">Newsletter</a>
+        <a href="#listen">Listen</a>
+      </div>
+    </nav>
+    <div class="rail" aria-hidden="true">
+      <div class="ticks"><span id="tick-0">HERO · 0%</span><span id="tick-1">THE GRIP · 25%</span><span id="tick-2">INSIDE · 50%</span><span id="tick-3">LINEUP · 75%</span><span id="tick-4">LISTEN · 100%</span></div>
+      <div class="bar"><div class="fill" id="rail-fill"></div></div>
+    </div>
+  </div>
+
+  <section class="beat" id="intro" aria-label="Intro">
+    <div class="copy" style="max-width: 400px; gap: 16px">
+      <p class="kicker" style="color: var(--muted)">Hockey podcast · New episodes every Sunday</p>
+      <p class="lede">The relevant and completely irrelevant ins and outs of the NHL, plus a little pop culture. Hosted by Ilyas &amp; Eshan Kherani.</p>
+      <div class="btn-row">
+        <a class="btn" href="https://open.spotify.com/show/4DXs6c3hSM9StEMNhwhtfP" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg>Listen on Spotify</a>
+        <a class="btn btn--ghost" href="episodes.html">Browse episodes</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="beat" id="grip" aria-labelledby="h-grip">
+    <div class="copy">
+      <p class="kicker">01 — The grip</p>
+      <h2 class="display" id="h-grip">Sweat the details</h2>
+      <p class="lede">Line changes, trade talk, goalie form — the small stuff that swings a game gets real airtime here.</p>
+    </div>
+  </section>
+
+  <section class="beat" id="inside" aria-labelledby="h-inside">
+    <div class="copy">
+      <p class="kicker">02 — What's inside</p>
+      <h2 class="display" id="h-inside">Every episode, three layers</h2>
+      <p class="lede">The week's biggest NHL stories, a Player of the Week pick, and predictions we actually go back and score.</p>
+    </div>
+  </section>
+
+  <section class="beat" id="lineup" aria-labelledby="h-lineup">
+    <div class="copy">
+      <p class="kicker">03 — The lineup</p>
+      <h2 class="display" id="h-lineup">Oilers &amp; Canucks first</h2>
+      <p class="lede">Then the rest of the league — plus guest interviews with people working in and around the game.</p>
+      <p class="kicker" style="color: var(--muted); letter-spacing: 0.1em">Drag the puck to spin it</p>
+    </div>
+  </section>
+
+  <section class="beat" id="listen" aria-labelledby="h-listen">
+    <div class="copy">
+      <p class="kicker">04 — Drop the puck</p>
+      <h2 class="display" id="h-listen">Pull up a seat in the box</h2>
+      <a class="latest" id="latest" href="episodes.html" hidden>
+        <span class="num" id="latest-num"></span>
+        <span style="display: flex; flex-direction: column; gap: 4px">
+          <span class="meta" id="latest-meta">LATEST EPISODE</span>
+          <span class="t" id="latest-title"></span>
+        </span>
+      </a>
+      <div class="btn-row">
+        <a class="btn" href="https://open.spotify.com/show/4DXs6c3hSM9StEMNhwhtfP" target="_blank" rel="noopener">Spotify</a>
+        <a class="btn" href="https://podcasts.apple.com/podcast/id1851736966" target="_blank" rel="noopener">Apple Podcasts</a>
+        <a class="btn" href="https://www.youtube.com/@BrothersintheBox" target="_blank" rel="noopener">YouTube</a>
+        <a class="btn" href="https://music.amazon.ca/podcasts/7ffe8e12-3e20-4b22-acd2-36f4e3b766b3/brothers-in-the-box" target="_blank" rel="noopener">Amazon Music</a>
+      </div>
+      <div class="social-row">
+        <a href="https://www.instagram.com/brothers_in_the_box/" target="_blank" rel="noopener">Instagram @brothers_in_the_box</a>
+        <a href="https://www.tiktok.com/@brothers.in.the.box" target="_blank" rel="noopener">TikTok @brothers.in.the.box</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="brand"><img src="assets/logo-light.png" alt=""><span>BROTHERS IN THE BOX</span></div>
+  <div class="social">
+    <a href="episodes.html">Episodes</a>
+    <a href="https://brothersinthebox.riverside.com/newsletter" target="_blank" rel="noopener">Newsletter</a>
+    <a href="mailto:brothersinthebox@gmail.com">brothersinthebox@gmail.com</a>
+  </div>
+  <span>© 2026 Brothers in the Box</span>
+</footer>
+
+<script src="assets/three.min.js"></script>
+<script src="assets/episodes-data.js"></script>
+<script src="assets/home.js"></script>
+</body>
+</html>
