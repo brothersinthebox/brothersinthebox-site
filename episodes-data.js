@@ -1,6 +1,6 @@
 /* Loads episodes for the site.
    1. Tries the live feed through /api/episodes (the Netlify Function).
-   2. Falls back to data/episodes.json (a saved copy) if that fails.
+   2. Falls back to episodes.json (a saved copy) if that fails.
    Then adds the extras the feed doesn't carry: season, episode type,
    Player of the Week and guests. Edit META below to change those. */
 (function () {
@@ -156,7 +156,7 @@
     if (cached) return cached;
     cached = Promise.race([getJSON('/api/episodes'), timeout(6000)])
       .then(function (d) { if (!d.episodes || !d.episodes.length) throw new Error('empty'); d.live = true; return d; })
-      .catch(function () { return getJSON('data/episodes.json').then(function (d) { d.live = false; return d; }); })
+      .catch(function () { return getJSON('episodes.json').then(function (d) { d.live = false; return d; }); })
       .then(function (d) { return { live: d.live, updated: d.updated, episodes: enrich(d.episodes) }; });
     return cached;
   };

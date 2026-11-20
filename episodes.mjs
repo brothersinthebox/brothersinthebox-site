@@ -1,7 +1,7 @@
 // Netlify Function: reads the podcast's RSS feed on the server (browsers
 // can't read it directly) and hands the site a JSON list of episodes.
 // Responses are cached for an hour, so the feed is read at most once an hour.
-import { fetchEpisodes } from '../../lib/feed.mjs';
+import { fetchEpisodes } from '../../feed.mjs';
 
 export default async () => {
   try {
