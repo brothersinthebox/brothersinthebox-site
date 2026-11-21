@@ -141,8 +141,12 @@
   function route() {
     var m = /[?&]ep=(\d+)/.exec(location.search);
     var e = m && state.episodes.filter(function (x) { return x.num === Number(m[1]); })[0];
+    var room = window.BITB.room;
+    if (room) { room.show(!e); room.start(state.episodes); }
+    document.body.classList.toggle('dark-top', !e && !!room);
     if (e) renderDetail(e); else renderIndex();
   }
+  window.BITB.openEpisode = function (n) { go('?ep=' + n); };
 
   function go(url) {
     history.pushState({}, '', url);
@@ -157,6 +161,10 @@
     if (t.hasAttribute('data-more')) { state.limit += PAGE; renderIndex(); return; }
     ev.preventDefault();
     go(t.hasAttribute('data-back') ? 'episodes.html' : '?ep=' + t.getAttribute('data-ep'));
+  });
+  document.getElementById('room-listen') && document.getElementById('room-listen').addEventListener('click', function (ev) {
+    if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
+    ev.preventDefault(); go('?ep=' + this.getAttribute('data-ep'));
   });
   window.addEventListener('popstate', route);
 

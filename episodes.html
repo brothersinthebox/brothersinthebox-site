@@ -78,6 +78,43 @@
   .pager small { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); }
   .pager b { font-size: 17px; }
   @media (prefers-reduced-motion: reduce) { .card, .card .puck { transition: none; } .card:hover { transform: none; } }
+
+  /* The screen room (3D hero) */
+  body.dark-top .site-nav { position: absolute; top: 0; left: 0; right: 0; z-index: 5; background: transparent; }
+  body.dark-top .site-nav .brand img { content: url(logo-light.png); }
+  body.dark-top .site-nav .links a { color: #E6ECF2; }
+  body.dark-top .site-nav .links a:hover { color: #FFFFFF; }
+  body.dark-top .site-nav .btn { background: var(--ground); color: var(--ink); border-color: var(--ground); }
+  .room { position: relative; height: 620vh; background: #03050a; color: #F5F7FA; }
+  .room[hidden] { display: none; }
+  .room--still { height: 100vh; height: 100svh; }
+  .room .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  .room canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .room .shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(3,5,10,0.75) 0, rgba(3,5,10,0) 130px), linear-gradient(to top, rgba(3,5,10,0.92) 0%, rgba(3,5,10,0.55) 26%, rgba(3,5,10,0) 50%); }
+  .room .roomtag { position: absolute; top: 20px; left: 6vw; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: #8fa3bb; text-transform: uppercase; pointer-events: none; border: 0; padding: 0; }
+  .room .intro { position: absolute; left: 6vw; bottom: 9vh; max-width: 620px; display: flex; flex-direction: column; gap: 14px; pointer-events: none; }
+  .room .intro .display { font-size: clamp(48px, 7.5vw, 112px); line-height: 0.9; color: #FFFFFF; }
+  .room .intro .display em { font-style: normal; color: var(--orange); }
+  .room .intro p { margin: 0; font-size: 17px; line-height: 1.5; color: #C9D3DA; max-width: 460px; }
+  .room .hint { position: absolute; left: 50%; bottom: 3.5vh; transform: translateX(-50%); font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; color: #8fa3bb; pointer-events: none; }
+  .room .rcard { position: absolute; left: 6vw; bottom: 7vh; max-width: min(500px, 88vw); display: flex; flex-direction: column; gap: 12px; opacity: 0; transform: translateY(14px); transition: opacity 300ms ease, transform 300ms ease; pointer-events: none; }
+  .room .rcard.on { opacity: 1; transform: none; pointer-events: auto; }
+  .room .rcard .ridx { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; color: var(--orange); }
+  .room .rcard .rkind { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: #8fa3bb; }
+  .room .rcard h2 { margin: 0; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(34px, 4.2vw, 62px); line-height: 0.95; color: #FFFFFF; }
+  .room .rcard p { margin: 0; font-size: 16px; line-height: 1.5; color: #C9D3DA; }
+  .room .rail { position: absolute; right: 6vw; bottom: 8vh; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .room .rail i { display: block; width: 4px; height: 26px; border-radius: 2px; background: rgba(255,255,255,0.18); transition: background 200ms ease, height 200ms ease; }
+  .room .rail i.on { background: var(--orange); height: 42px; }
+  .room .outro { position: absolute; left: 0; right: 0; bottom: 10vh; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; opacity: 0; pointer-events: none; }
+  .room .outro .display { font-size: clamp(40px, 6vw, 80px); color: #FFFFFF; }
+  .room .outro p { margin: 0; color: #C9D3DA; font-size: 16px; }
+  @media (max-width: 760px) {
+    .room .roomtag { display: none; }
+    .room .rcard { bottom: 5vh; }
+    .room .rcard p { font-size: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .room .rail { right: 4vw; top: 50%; bottom: auto; transform: translateY(-50%); }
+  }
 </style>
 </head>
 <body>
@@ -92,6 +129,35 @@
   </div>
   <a class="btn" href="https://open.spotify.com/show/4DXs6c3hSM9StEMNhwhtfP" target="_blank" rel="noopener" style="min-height: 44px; font-size: 14px">Listen on Spotify</a>
 </nav>
+
+<section class="room" id="room" aria-label="The screen room: newest episodes" hidden>
+  <div class="stage">
+    <canvas id="room-canvas" aria-hidden="true"></canvas>
+    <div class="shade"></div>
+    <div class="intro" id="room-intro">
+      <p class="kicker" style="color:var(--orange)">Episodes</p>
+      <p class="display">Every screen is <em>an episode</em></p>
+      <p>Scroll to drop into the box. Tap any screen to open that episode.</p>
+    </div>
+    <span class="hint" id="room-hint">SCROLL ↓</span>
+    <div class="rcard" id="room-card" aria-live="polite">
+      <span class="ridx" id="room-idx"></span>
+      <span class="rkind" id="room-kind"></span>
+      <h2 id="room-title"></h2>
+      <p id="room-teaser"></p>
+      <div class="btn-row">
+        <a class="btn btn--light" id="room-listen" href="#">Open episode →</a>
+        <a class="btn btn--outline-light" href="https://open.spotify.com/show/4DXs6c3hSM9StEMNhwhtfP" target="_blank" rel="noopener">Spotify</a>
+      </div>
+    </div>
+    <div class="rail" id="room-rail" aria-hidden="true"></div>
+    <div class="outro" id="room-outro">
+      <p class="display">Every episode</p>
+      <p>Filter by season, Oilers or guests below.</p>
+      <a class="btn btn--light" href="#app">Browse them all ↓</a>
+    </div>
+  </div>
+</section>
 
 <main id="app" aria-live="polite">
   <div class="wrap"><p class="count">LOADING EPISODES…</p></div>
@@ -108,7 +174,9 @@
   <span>© 2026 Brothers in the Box</span>
 </footer>
 
+<script src="three.min.js"></script>
 <script src="episodes-data.js"></script>
+<script src="room.js"></script>
 <script src="episodes.js"></script>
 </body>
 </html>
