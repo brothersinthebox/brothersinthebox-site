@@ -85,15 +85,63 @@
     return phase === 'Offseason' ? 'OFFSEASON' : phase === 'Playoffs' ? 'PLAYOFFS' : 'REGULAR SEASON';
   }
 
-  var NAME = '([A-Z][\\w’\'.-]+(?: [A-Z][\\w’\'.-]+){1,2})';
+  // Player of the Week detection for new episodes. Forgiving about wording,
+  // capitals, accents (Stützle, Höglander) and "POTW". A surname on its own
+  // ("POTW: McDavid") works if that player has been picked before.
+  var L = '\\p{L}(?:[\\p{L}’\'.-]*\\p{L})?\\.?';
+  var CAP = '\\p{Lu}(?:[\\p{L}’\'.-]*\\p{L})?';
+  var NAME = '(' + CAP + '(?: (?:' + CAP + '|van|de|der|la|le)){1,3})';
+  var TRIG = '(?:[Pp]layer [Oo]f [Tt]he [Ww]eek|POTW|[Pp]otw)';
+  var HMW = '(?:[Hh]onou?rable [Mm]ention|HM)';
+  var STOP = /^(and|with|who|for|after|this|that|the|is|was|as|in|on|of|from|our|his|their|it|to|but|again|honou?rable|hm)$/i;
+  var KNOWN = (function () {
+    var out = {};
+    Object.keys(META).forEach(function (k) {
+      (META[k].potw || '').replace(/^Player of the Season:\s*/, '').split(/\s*\(HM:\s*|\)/).forEach(function (n) {
+        n = n.trim(); if (!n) return;
+        var last = n.split(' ').pop().toLowerCase();
+        out[last] = n; out[n.toLowerCase()] = n;
+      });
+    });
+    return out;
+  })();
+
+  function tidyName(raw) {
+    if (!raw) return null;
+    var words = raw.trim().split(/\s+/).map(function (w) { return /^(\p{Lu}\.)+$/u.test(w) ? w : w.replace(/[.’',:;!?-]+$/, ''); });
+    var keep = [];
+    for (var i = 0; i < words.length && keep.length < 3; i++) {
+      if (!words[i] || (i > 0 && STOP.test(words[i]))) break;
+      keep.push(words[i]);
+    }
+    if (!keep.length || STOP.test(keep[0])) return null;
+    var name = keep.join(' ');
+    if (KNOWN[name.toLowerCase()]) return KNOWN[name.toLowerCase()];
+    if (keep.length === 1) return KNOWN[name.toLowerCase()] || null;
+    // two capitalised words beat a trailing lowercase word ("Connor McDavid again")
+    if (keep.length === 3 && /^\p{Ll}/u.test(keep[2]) && /^\p{Lu}/u.test(keep[1])) keep.pop();
+    if (KNOWN[keep[keep.length - 1].toLowerCase()] && keep.length === 2 && keep.join(' ').toLowerCase() === KNOWN[keep[1].toLowerCase()].toLowerCase()) return KNOWN[keep[1].toLowerCase()];
+    return keep.map(function (w) { return /^\p{Ll}/u.test(w) && !/^(van|de|der|la|le)$/.test(w) ? w.charAt(0).toUpperCase() + w.slice(1) : w; }).join(' ');
+  }
+
+  function after(t, lead) {
+    var m = new RegExp(lead + '\\s*((?:' + L + ')(?:\\s+' + L + '){0,3})', 'u').exec(t);
+    return m ? tidyName(m[1].split(/[,;:!?()]|(?<!\b\p{Lu})\.(?=\s|$)/u)[0]) : null;
+  }
+
   function guessPotw(e) {
-    var t = e.paragraphs.join(' ');
-    var p = new RegExp('Player of the Week(?: honou?rs)?(?: is| goes to| going to|:)?\\s*(?:an easy one:\\s*)?' + NAME).exec(t) ||
-            new RegExp(NAME + ' takes Player of the Week').exec(t);
-    if (!p) return null;
-    var hm = new RegExp(NAME + ' (?:grabs|takes|earns|earning|gets)[^.]{0,20}honou?rable mention').exec(t) ||
-             new RegExp('with ' + NAME + ' earning HM').exec(t);
-    return p[1] + (hm ? ' (HM: ' + hm[1] + ')' : '');
+    var t = e.paragraphs.join(' ').replace(/\s+/g, ' ');
+    var winner =
+      after(t, TRIG + '(?: [Hh]onou?rs)?,?(?: this week| for (?:this|the) week)?(?: is| was| goes to| going to| went to| belongs to| giving it to| to)?(?: none other than)?\\s*[:\\-–—]?(?:\\s*an easy one:)?') ||
+      (function () { var m = new RegExp(NAME + ' (?:takes|wins|is|was|gets|earns|grabs|claims)(?: our| this week’s| this week\'s| the)? ' + TRIG, 'u').exec(t); return m ? tidyName(m[1]) : null; })() ||
+      (function () { var m = new RegExp('(?:[Nn]ame[sd]?|[Cc]rown(?:s|ed)?|[Pp]ick(?:s|ed)?) (' + L + '(?: ' + L + '){0,2}) (?:as )?(?:their|our|the|this week’s|this week\'s) ' + TRIG, 'u').exec(t); return m ? tidyName(m[1]) : null; })();
+    if (!winner) return null;
+    var hm =
+      (function () { var m = new RegExp(NAME + ' (?:grabs|takes|earns|earning|gets|got|wins|picks up|gets)[^.]{0,20}' + HMW, 'u').exec(t); return m ? tidyName(m[1]) : null; })() ||
+      (function () { var m = new RegExp('with (' + CAP + '(?: ' + CAP + '){0,2}) (?:earning|getting|taking|as)(?: the| an)? ' + HMW, 'u').exec(t); return m ? tidyName(m[1]) : null; })() ||
+      after(t, HMW + '(?: goes to| is| was| went to)?\\s*[:\\-–—]?');
+    if (hm && hm.toLowerCase() === winner.toLowerCase()) hm = null;
+    return winner + (hm ? ' (HM: ' + hm + ')' : '');
   }
 
   function firstSentence(s) {
