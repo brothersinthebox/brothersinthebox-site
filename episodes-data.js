@@ -136,6 +136,15 @@
           phase: phase, kind: kind, tags: tags.slice(0, 3),
           potw: meta.potw || guessPotw(e) || '—', who: meta.who || 'Ilyas & Eshan'
         };
+      })
+      .map(function (e) {
+        // Split "Winner (HM: Runner-up)" into its parts for the Player of the Week page
+        var m = /^(.*?)(?:\s*\(HM:\s*(.*?)\))?$/.exec(e.potw);
+        var season = /^Player of the Season:\s*(.*)$/.exec(e.potw);
+        e.potwWinner = (e.potw === '—' || season) ? null : (m[1] || '').trim() || null;
+        e.potwHm = m && m[2] ? m[2].trim() : null;
+        e.seasonAward = season ? season[1].trim() : null;
+        return e;
       });
   }
 

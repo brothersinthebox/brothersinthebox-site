@@ -118,7 +118,11 @@
         '<div class="stats">' +
           '<div class="stat"><small>RELEASED</small><b>' + esc(e.dateLabel) + '</b></div>' +
           '<div class="stat"><small>RUNTIME</small><b>' + esc(e.runtime || '—') + '</b></div>' +
-          '<div class="stat"><small>PLAYER OF THE WEEK</small><b>' + esc(e.potw) + '</b></div>' +
+          '<div class="stat"><small>PLAYER OF THE WEEK</small><b>' + (e.potwWinner
+            ? '<a href="potw.html?player=' + encodeURIComponent(e.potwWinner) + '">' + esc(e.potwWinner) + '</a>' +
+              (e.potwHm ? ' <span style="font-weight:500;color:var(--muted)">(HM: <a href="potw.html?player=' + encodeURIComponent(e.potwHm) + '" style="color:inherit">' + esc(e.potwHm) + '</a>)</span>' : '')
+            : esc(e.potw)) + '</b>' +
+            (e.potwWinner || e.seasonAward ? '<a href="potw.html" style="font-size:13px;font-weight:600;margin-top:4px">See every pick →</a>' : '') + '</div>' +
           '<div class="stat"><small>IN THE BOX</small><b>' + esc(e.who) + '</b></div>' +
         '</div>' +
         '<section class="notes" aria-labelledby="h-notes">' +

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Player of the Week — Brothers in the Box</title>
+<meta name="description" content="Every Player of the Week pick from the Brothers in the Box hockey podcast, with the leaderboard of who's won it most.">
+<meta name="theme-color" content="#F5F7FA">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brothers in the Box">
+<meta property="og:title" content="Player of the Week — Brothers in the Box">
+<meta property="og:description" content="Every Player of the Week pick, and who's won it most.">
+<meta property="og:image" content="og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<style>
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 6vw 96px; display: flex; flex-direction: column; gap: 40px; }
+  .head h1 { font-size: clamp(56px, 8vw, 112px); line-height: 0.9; }
+  .head { display: flex; flex-direction: column; gap: 12px; max-width: 720px; }
+  .season { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; background: var(--ink); color: var(--ground); border-radius: 24px; padding: 24px 28px; }
+  .season .trophy { font-family: var(--display); font-size: 64px; line-height: 0.9; color: var(--orange); }
+  .season small { display: block; font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; color: #A9B6C0; }
+  .season b { font-family: var(--display); font-weight: 400; font-size: 36px; text-transform: uppercase; line-height: 1; }
+  .season a { color: #C9D3DA; font-size: 14px; }
+  .cols { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+  .board { flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .board h2, .picks h2 { font-size: 40px; }
+  .rows { display: flex; flex-direction: column; gap: 6px; }
+  .row { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 34px 1fr auto; gap: 4px 12px; align-items: center; padding: 12px 14px; border-radius: 14px; background: var(--card); }
+  .row:hover { box-shadow: 0 6px 18px rgba(11, 13, 16, 0.08); }
+  .row:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
+  .row[aria-pressed="true"] { background: var(--ink); color: var(--ground); }
+  .row[aria-pressed="true"] .rank, .row[aria-pressed="true"] .sub { color: #A9B6C0; }
+  .row .rank { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--muted); }
+  .row .name { font-weight: 700; font-size: 16px; }
+  .row .wins { font-family: var(--display); font-size: 28px; line-height: 1; text-align: right; }
+  .row .bar { grid-column: 2 / 4; height: 4px; border-radius: 4px; background: rgba(11, 13, 16, 0.08); overflow: hidden; }
+  .row .bar i { display: block; height: 100%; background: var(--orange); }
+  .row .sub { grid-column: 2 / 4; font-size: 12px; color: var(--muted); }
+  .toggle { align-self: flex-start; }
+  .picks { flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .filterbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 8px 0 16px; border-radius: 999px; background: var(--ink); color: var(--ground); font-weight: 600; font-size: 14px; }
+  .pill button { all: unset; cursor: pointer; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.15); }
+  .list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .pick { display: grid; grid-template-columns: 74px 1fr; gap: 6px 18px; padding: 18px 0; border-top: 1px solid var(--line); }
+  .pick .ep { font-family: var(--display); font-size: 40px; line-height: 1; color: var(--orange-text); text-decoration: none; }
+  .pick .ep small { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); margin-top: 6px; }
+  .pick .who { font-family: var(--display); font-size: 30px; line-height: 1; text-transform: uppercase; }
+  .pick .who a, .pick .hm a { text-decoration: none; }
+  .pick .who a:hover, .pick .hm a:hover { text-decoration: underline; }
+  .pick .hm { font-size: 15px; color: var(--body); }
+  .pick .from { font-size: 14px; color: var(--muted); }
+  .pick .from a { color: var(--muted); }
+  @media (max-width: 760px) { .pick { grid-template-columns: 56px 1fr; } .pick .ep { font-size: 32px; } .pick .who { font-size: 24px; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#app">Skip to content</a>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="./" aria-label="Brothers in the Box home"><img src="logo.png" alt="Brothers in the Box"></a>
+  <div class="links">
+    <a href="./">Home</a>
+    <a href="episodes.html">Episodes</a>
+    <a href="potw.html" aria-current="page">Player of the Week</a>
+  </div>
+  <a class="btn" href="https://open.spotify.com/show/4DXs6c3hSM9StEMNhwhtfP" target="_blank" rel="noopener" style="min-height: 44px; font-size: 14px">Listen on Spotify</a>
+</nav>
+
+<main id="app" class="wrap" aria-live="polite">
+  <header class="head">
+    <p class="kicker">Every week since Episode 9</p>
+    <h1 class="display">Player of the Week</h1>
+    <p class="lede" id="intro">Loading the picks…</p>
+  </header>
+  <div id="season"></div>
+  <div class="cols">
+    <section class="board" aria-labelledby="h-board">
+      <h2 class="display" id="h-board">Leaderboard</h2>
+      <p class="lede" style="font-size:14px;color:var(--muted)">Tap a player to see just their weeks.</p>
+      <div class="rows" id="rows"></div>
+      <button type="button" class="btn btn--ghost toggle" id="toggle" hidden></button>
+    </section>
+    <section class="picks" aria-labelledby="h-picks">
+      <h2 class="display" id="h-picks">Every pick</h2>
+      <div class="filterbar" id="filterbar"></div>
+      <ol class="list" id="list"></ol>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="brand"><img src="logo-light.png" alt=""><span>BROTHERS IN THE BOX</span></div>
+  <div class="social">
+    <a href="episodes.html">Episodes</a>
+    <a href="https://www.instagram.com/brothers_in_the_box/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.tiktok.com/@brothers.in.the.box" target="_blank" rel="noopener">TikTok</a>
+  </div>
+  <span>© 2026 Brothers in the Box</span>
+</footer>
+
+<script src="episodes-data.js"></script>
+<script src="potw.js"></script>
+</body>
+</html>
