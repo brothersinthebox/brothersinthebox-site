@@ -21,11 +21,9 @@
     idx: document.getElementById('room-idx'),
     kind: document.getElementById('room-kind'),
     title: document.getElementById('room-title'),
-    teaser: document.getElementById('room-teaser'),
     listen: document.getElementById('room-listen'),
     outro: document.getElementById('room-outro'),
-    rail: document.getElementById('room-rail'),
-    hint: document.getElementById('room-hint')
+    rail: document.getElementById('room-rail')
   };
 
   var renderer;
@@ -256,7 +254,6 @@
 
     // Overlay text
     overlay.intro.style.opacity = 1 - seg(p, 0.02, 0.12);
-    overlay.hint.style.opacity = 1 - seg(p, 0.01, 0.06);
     overlay.outro.style.opacity = seg(p, FEAT_END - 0.01, FEAT_END + 0.04);
     overlay.outro.style.pointerEvents = p > FEAT_END ? 'auto' : 'none';
     if (active !== lastIdx) {
@@ -266,7 +263,6 @@
         overlay.idx.textContent = String(active + 1).padStart(2, '0') + ' / ' + String(featured.length).padStart(2, '0') + (active === 0 ? ' · NEWEST' : '');
         overlay.kind.textContent = (e.kind + ' · ' + e.dateLabel + (e.runtime ? ' · ' + e.runtime : '')).toUpperCase();
         overlay.title.textContent = e.title;
-        overlay.teaser.textContent = e.teaser;
         overlay.listen.href = '?ep=' + e.num;
         overlay.listen.setAttribute('data-ep', e.num);
         overlay.card.classList.add('on');

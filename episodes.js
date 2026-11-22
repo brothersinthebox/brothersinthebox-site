@@ -71,7 +71,7 @@
           '<div style="display:flex;flex-direction:column;gap:12px;max-width:640px">' +
             '<p class="kicker">The archive</p>' +
             '<h1 class="display">Every episode is a project</h1>' +
-            '<p class="lede">' + total + ' episodes, every Sunday since September 2025. Pick a puck to open the show notes, the Player of the Week and who was in the box.</p>' +
+            '<p class="lede">' + total + ' episodes, every Sunday since September 2025.</p>' +
           '</div>' +
           '<div class="chips" role="group" aria-label="Filter episodes">' +
             fs.map(function (f) { return '<button type="button" class="chip" data-filter="' + esc(f.label) + '" aria-pressed="' + (f === active) + '">' + esc(f.label) + '</button>'; }).join('') +
@@ -162,7 +162,7 @@
     ev.preventDefault();
     go(t.hasAttribute('data-back') ? 'episodes.html' : '?ep=' + t.getAttribute('data-ep'));
   });
-  document.getElementById('room-listen') && document.getElementById('room-listen').addEventListener('click', function (ev) {
+  document.getElementById('room-listen').addEventListener('click', function (ev) {
     if (ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
     ev.preventDefault(); go('?ep=' + this.getAttribute('data-ep'));
   });
