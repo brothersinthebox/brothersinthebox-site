@@ -52,7 +52,6 @@
       '<div class="body">' +
         '<span class="meta">' + esc(e.dateLabel) + (e.runtime ? ' · ' + esc(e.runtime) : '') + '</span>' +
         '<span class="title">' + esc(e.title) + '</span>' +
-        '<span class="teaser">' + esc(e.teaser) + '</span>' +
         '<span class="tags">' + e.tags.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('') + '</span>' +
       '</div></a>';
   }
@@ -101,7 +100,6 @@
           '<div class="left">' +
             '<p class="kicker" style="color:' + band + '">Episode ' + e.num + ' · ' + esc(e.kind) + '</p>' +
             '<h1 class="display">' + esc(e.title) + '</h1>' +
-            '<p class="lede" style="font-size:19px">' + esc(e.teaser) + '</p>' +
           '</div>' +
           '<span class="num" aria-hidden="true" style="color:' + band + '">' + e.num + '</span>' +
         '</header>' +

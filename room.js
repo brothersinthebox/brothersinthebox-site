@@ -49,7 +49,7 @@
       pos[i * 3] = r * s * Math.cos(th); pos[i * 3 + 1] = Math.abs(r * u) + 10; pos[i * 3 + 2] = r * s * Math.sin(th);
     }
     var g = new T.BufferGeometry(); g.setAttribute('position', new T.BufferAttribute(pos, 3));
-    scene.add(new T.Points(g, new T.PointsMaterial({ color: 0xbfd0ff, size: 0.35, sizeAttenuation: true, fog: false, transparent: true, opacity: 0.8 })));
+    scene.add(new T.Points(g, new T.PointsMaterial({ color: 0xe6ecf2, size: 0.35, sizeAttenuation: true, fog: false, transparent: true, opacity: 0.8 })));
   })();
 
   // ---------- Floor: centre ice glowing blue ----------
@@ -58,15 +58,15 @@
     var g = c.getContext('2d');
     g.fillStyle = '#04070d'; g.fillRect(0, 0, 1024, 1024);
     var glow = g.createRadialGradient(512, 512, 10, 512, 512, 512);
-    glow.addColorStop(0, '#3d8bff'); glow.addColorStop(0.22, '#1f5fc8'); glow.addColorStop(0.55, '#0b2a63'); glow.addColorStop(1, 'rgba(4,7,13,0)');
+    glow.addColorStop(0, '#1d4f8f'); glow.addColorStop(0.25, '#0A3A78'); glow.addColorStop(0.6, '#06244d'); glow.addColorStop(1, 'rgba(4,7,13,0)');
     g.fillStyle = glow; g.fillRect(0, 0, 1024, 1024);
-    g.strokeStyle = 'rgba(190,220,255,0.55)'; g.lineWidth = 6;
+    g.strokeStyle = 'rgba(245,247,250,0.45)'; g.lineWidth = 6;
     g.beginPath(); g.arc(512, 512, 190, 0, Math.PI * 2); g.stroke();
-    g.lineWidth = 3; g.strokeStyle = 'rgba(190,220,255,0.25)';
+    g.lineWidth = 3; g.strokeStyle = 'rgba(245,247,250,0.18)';
     g.beginPath(); g.arc(512, 512, 330, 0, Math.PI * 2); g.stroke();
     g.fillStyle = 'rgba(226,112,43,0.9)';
     g.beginPath(); g.arc(512, 512, 14, 0, Math.PI * 2); g.fill();
-    g.fillStyle = 'rgba(190,220,255,0.18)'; g.fillRect(0, 506, 1024, 12);
+    g.fillStyle = 'rgba(226,112,43,0.35)'; g.fillRect(0, 506, 1024, 12);
     var t = new T.CanvasTexture(c); t.colorSpace = T.SRGBColorSpace; t.anisotropy = 8;
     return t;
   }
@@ -76,7 +76,7 @@
 
   // Soft blue ring of light where the wall meets the floor
   var ring = new T.Mesh(new T.CylinderGeometry(R - 0.05, R - 0.05, 0.7, 96, 1, true),
-    new T.MeshBasicMaterial({ color: 0x1f5fc8, transparent: true, opacity: 0.35, side: T.BackSide, depthWrite: false }));
+    new T.MeshBasicMaterial({ color: 0x0A3A78, transparent: true, opacity: 0.45, side: T.BackSide, depthWrite: false }));
   ring.position.y = 0.35; room.add(ring);
 
   // ---------- The puck at centre ice ----------
@@ -99,7 +99,7 @@
     puck.add(shadow);
   })();
   room.add(puck);
-  scene.add(new T.AmbientLight(0x6f8fd0, 0.9));
+  scene.add(new T.AmbientLight(0xc9d3da, 0.8));
   var spot = new T.SpotLight(0xffffff, 60, 20, 0.5, 0.6, 1.5);
   spot.position.set(0, 9, 2); spot.target = puck; scene.add(spot);
 
@@ -183,7 +183,7 @@
     // Featured screens: copies with a glowing frame that fly to the front
     featured = list.slice(0, FEATURED).map(function (e, i) {
       var g = new T.Group();
-      var frame = new T.Mesh(new T.PlaneGeometry(SCR_W + 0.08, SCR_H + 0.08), new T.MeshBasicMaterial({ color: i % 2 ? 0x2d5fa3 : 0xe2702b, fog: false }));
+      var frame = new T.Mesh(new T.PlaneGeometry(SCR_W + 0.08, SCR_H + 0.08), new T.MeshBasicMaterial({ color: i % 2 ? 0xf5f7fa : 0xe2702b, fog: false }));
       frame.position.z = -0.004;
       var face = new T.Mesh(geo, new T.MeshBasicMaterial({ map: mats[i].map, fog: false }));
       g.add(frame); g.add(face);
